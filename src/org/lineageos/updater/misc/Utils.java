@@ -106,9 +106,13 @@ public class Utils {
     }
 
     public static boolean canInstall(UpdateBaseInfo update) {
-        return update.getTimestamp() >= SystemProperties.getLong(Constants.PROP_BUILD_DATE, 0) &&
-                update.getVersion().equalsIgnoreCase(
-                        SystemProperties.get(Constants.PROP_BUILD_VERSION));
+        try {
+            return update.getTimestamp() >= SystemProperties.getLong(Constants.PROP_BUILD_DATE, 0) &&
+                    Float.valueOf(update.getVersion()) >= Float.valueOf(
+                            SystemProperties.get(Constants.PROP_BUILD_VERSION));
+        } catch (NumberFormatException e) {
+           return false;
+        }
     }
 
     public static List<UpdateInfo> parseJson(File file, boolean compatibleOnly)
